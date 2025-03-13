@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=96&id=Wt6GqLJJDLjz&format=png">
+    <title>Subhodip Sikdar | Personal Website</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8d4;
+            --accent: #8e44ad;
+            --info: #3498db;
+            --tech: #16a085;
+            --education: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            background-color: var(--bg-secondary);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--accent), var(--info));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to right, var(--accent), var(--info));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(142, 68, 173, 0.2), rgba(52, 152, 219, 0.2));
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 25px rgba(142, 68, 173, 0.6);
+        }
+
+        .name {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            background: linear-gradient(to right, var(--accent), var(--info));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent), var(--info));
+            border-radius: 2px;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .about-card {
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+        }
+
+        .card-content p {
+            margin-bottom: 15px;
+        }
+
+        .skills-container {
+            margin-top: 40px;
+        }
+
+        .skill-category {
+            margin-bottom: 30px;
+        }
+
+        .skill-category-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--info);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .skill-item {
+            background-color: var(--bg-secondary);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(142, 68, 173, 0.2), rgba(52, 152, 219, 0.2));
+        }
+
+        .goals-container {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .goal-card {
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .goal-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .goal-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .goal-description {
+            color: var(--text-secondary);
+        }
+
+        .projects-section {
+            text-align: center;
+        }
+
+        .projects-container {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--info));
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .game-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, var(--info), var(--accent));
+        }
+        
+        .game-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(142, 68, 173, 0.2);
+        }
+
+        footer {
+            background-color: var(--bg-secondary);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-content p {
+            margin-bottom: 10px;
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+
+        /* Additional styles for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .fade-in-delay-1 {
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .fade-in-delay-2 {
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .fade-in-delay-3 {
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+                margin-top: 15px;
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 15px;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .about-grid, .goals-container {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="logo">Subhodip Sikdar</a>
+            <button class="mobile-menu-btn">☰</button>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="roadmap.html" class="nav-link">Learning Roadmap</a>
+                <a href="number-master.html" class="nav-link">Number Master</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <img src="Cid.jpg" alt="Subhodip Sikdar" class="profile-image">
+                <h1 class="name fade-in">Subhodip Sikdar</h1>
+                <p class="tagline fade-in-delay-1">Aspiring Physicist, Space Enthusiast & Future Innovator</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title fade-in">About Me</h2>
+            <div class="about-grid">
+                <div class="about-card fade-in-delay-1">
+                    <h3 class="card-title">Who I Am</h3>
+                    <div class="card-content">
+                        <p>I'm an 18-year-old student from Kolkata, India, with a passion for space, AI, biotechnology, and computers. Currently preparing for JEE Advanced to study at Scaler School of Technology, I'm driven by curiosity and a desire to innovate.</p>
+                        <p>My goal is to secure a high-paying job (₹50L-₹1Cr per annum) and eventually move to a Smart City in India or relocate to Europe, which I see as a better option due to lower corruption levels.</p>
+                    </div>
+                </div>
+                <div class="about-card fade-in-delay-2">
+                    <h3 class="card-title">My Education</h3>
+                    <div class="card-content">
+                        <p>I'm currently focused on JEE Advanced preparation, studying up to 6-8 hours daily with a comprehensive collection of resources including Arihant, PW, HC Verma, and Disha publications.</p>
+                        <p>I've developed strategies to manage overthinking, which has been beneficial not just for JEE but for all aspects of life, and I've made lifestyle changes like quitting addictive social media content (Shorts/Reels) to improve focus.</p>
+                    </div>
+                </div>
+                <div class="about-card fade-in-delay-3">
+                    <h3 class="card-title">Tech & Hobbies</h3>
+                    <div class="card-content">
+                        <p>I run a PC setup with Fedora GNOME on a Lenovo ThinkCentre M91p (Intel i5-2400, 8GB RAM). While I've temporarily paused coding to focus on studies, I leverage AI for coding tasks when needed.</p>
+                        <p>I enjoy strategy games like Kerbal Space Program and Crusader Kings 3, and have interests in robotics, with plans to build my own robot in the future. I'm also learning to cook and enjoy 1-2 cups of tea daily.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title fade-in">Skills & Interests</h2>
+            <div class="skills-container">
+                <div class="skill-category fade-in-delay-1">
+                    <h3 class="skill-category-title">Academic Interests</h3>
+                    <div class="skills-list">
+                        <span class="skill-item">Physics</span>
+                        <span class="skill-item">Space Science</span>
+                        <span class="skill-item">Artificial Intelligence</span>
+                        <span class="skill-item">Biotechnology</span>
+                        <span class="skill-item">Microeconomics</span>
+                        <span class="skill-item">Computer Science</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in-delay-2">
+                    <h3 class="skill-category-title">Technical Skills</h3>
+                    <div class="skills-list">
+                        <span class="skill-item">Linux (Fedora)</span>
+                        <span class="skill-item">AI-Assisted Coding</span>
+                        <span class="skill-item">PC Building</span>
+                        <span class="skill-item">GNOME Environment</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in-delay-3">
+                    <h3 class="skill-category-title">Languages</h3>
+                    <div class="skills-list">
+                        <span class="skill-item">English</span>
+                        <span class="skill-item">Hindi</span>
+                        <span class="skill-item">Bengali</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>© 2025 Subhodip Sikdar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Simple JavaScript for mobile menu toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu when clicking a link on mobile
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

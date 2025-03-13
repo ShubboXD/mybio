@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=96&id=Wt6GqLJJDLjz&format=png">
+    <title>NumberMaster</title>
+    <style>
+        :root {
+            --background: #121212;
+            --surface: #1e1e1e;
+            --primary: #bb86fc;
+            --secondary: #03dac6;
+            --error: #cf6679;
+            --tertiary: #ff7597; /* New color for Next Game button */
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 1rem;
+        }
+        
+        .game-container {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tile {
+            aspect-ratio: 1;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        .tile:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        .tile.selected {
+            background-color: var(--primary);
+            color: #000;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .target-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .target-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .target-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .scores {
+            text-align: right;
+        }
+        
+        .level {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .score {
+            font-size: 1.2rem;
+        }
+        
+        .hints {
+            font-size: 1.2rem;
+            color: var(--tertiary);
+        }
+        
+        .operation-buttons, .game-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background-color: var(--secondary);
+        }
+        
+        button.tertiary {
+            background-color: var(--tertiary);
+        }
+        
+        button.danger {
+            background-color: var(--error);
+        }
+        
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message-box {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            min-height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .rules {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .rules h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .rules ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .rules li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .history {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .history h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .moves {
+            max-height: 150px;
+            overflow-y: auto;
+            color: var(--text-secondary);
+        }
+        
+        .move {
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        @media (max-width: 600px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .scores {
+                text-align: center;
+            }
+            .operation-buttons, .game-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-banner">
+          <a href="index.html" class="banner-link">Back</a>
+        </div>
+        <h1>NumberMaster</h1>
+        <p>A strategic math puzzle where you combine numbers to reach the target value.</p>
+      </header>
+      
+      <style>
+        .top-banner {
+          background: linear-gradient(135deg, #9b59b6, #3498db);
+          width: 100%;
+          padding: 14px 0;
+          text-align: center;
+          margin-bottom: 15px;
+          border-radius: 12px; /* Curved edges */
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* Soft floating shadow */
+          transition: all 0.3s ease-in-out;
+          cursor: pointer; /* Makes it feel clickable */
+        }
+      
+        .top-banner:hover {
+          transform: translateY(-3px) scale(1.02);
+          box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+        }
+      
+        .banner-link {
+          color: white;
+          text-decoration: none;
+          font-weight: bold;
+          letter-spacing: 0.6px;
+          text-transform: uppercase;
+          font-size: 1rem;
+          display: block;
+        }
+      </style>
+      
+    <div class="game-container">
+        <div class="controls">
+            <div class="target-container">
+                <div class="target-label">TARGET</div>
+                <div class="target-value" id="target">42</div>
+            </div>
+            <div class="scores">
+                <div class="level">Level: <span id="level">1</span></div>
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="hints">Hints: <span id="hints-left">0</span></div>
+            </div>
+        </div>
+        
+        <div class="message-box" id="message">
+            Select tiles and use operations to reach the target number.
+        </div>
+        
+        <div class="game-board" id="game-board">
+            <!-- Tiles will be generated by JavaScript -->
+        </div>
+        
+        <div class="operation-buttons">
+            <button id="add">+ Add</button>
+            <button id="subtract">− Subtract</button>
+            <button id="multiply">× Multiply</button>
+            <button id="divide">÷ Divide</button>
+        </div>
+        
+        <div class="game-buttons">
+            <button id="new-game" class="tertiary" disabled>Next Game</button>
+            <button id="hint" class="secondary">Hint</button>
+            <button id="reset-board" class="danger" disabled>Reset Board</button>
+        </div>
+    </div>
+    
+    <div class="rules">
+        <h2>How to Play</h2>
+        <ul>
+            <li>Select two number tiles, then choose an operation (+, −, ×, ÷) to combine them.</li>
+            <li>The result replaces the tiles you selected.</li>
+            <li>Keep combining numbers until you reach the target value.</li>
+            <li>You can only use each tile once, and all operations must result in whole numbers.</li>
+            <li>Complete levels to earn points and advance to harder challenges.</li>
+            <li>The fewer moves you use, the higher your score!</li>
+            <li>You earn 1 hint per level for levels 1-7, 2 hints for levels 8-15, and 3 hints for levels 16+.</li>
+            <li>Unused hints give bonus points when completing a level.</li>
+            <li>"Reset Board" will be available if the target becomes impossible to reach.</li>
+            <li>"Next Game" is only available when you successfully reach the target.</li>
+            <li>The game has 24 levels with increasing difficulty - can you master them all?</li>
+        </ul>
+    </div>
+    
+    <div class="history">
+        <h2>Move History</h2>
+        <div class="moves" id="moves-history">
+            <!-- Move history will be updated by JavaScript -->
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game state
+            let state = {
+                level: 1,
+                score: 0,
+                hintsAvailable: 0,
+                target: 0,
+                board: [],
+                selectedTiles: [],
+                moves: [],
+                gameCompleted: false,
+                targetReached: false,
+                isPuzzleSolvable: true
+            };
+            
+            // DOM elements
+            const gameBoard = document.getElementById('game-board');
+            const targetElement = document.getElementById('target');
+            const levelElement = document.getElementById('level');
+            const scoreElement = document.getElementById('score');
+            const hintsLeftElement = document.getElementById('hints-left');
+            const messageElement = document.getElementById('message');
+            const movesHistory = document.getElementById('moves-history');
+            const addButton = document.getElementById('add');
+            const subtractButton = document.getElementById('subtract');
+            const multiplyButton = document.getElementById('multiply');
+            const divideButton = document.getElementById('divide');
+            const newGameButton = document.getElementById('new-game');
+            const hintButton = document.getElementById('hint');
+            const resetBoardButton = document.getElementById('reset-board');
+            
+            // Initialize game
+            function initGame() {
+            state.level = 1;
+            state.score = 0;
+            state.hintsAvailable = getHintsForLevel(state.level);  // This new line
+                startNewLevel();
+                updateUI();
+            }
+            // Add this new function after initGame
+            function getHintsForLevel(level) {
+                if (level <= 7) return 1;
+                if (level <= 15) return 2;
+                return 3; // for levels 17 and above
+            }
+            
+            // Start a new level
+            function startNewLevel() {
+                state.board = generateBoard(state.level);
+                state.target = generateTarget(state.board, state.level);
+                state.selectedTiles = [];
+                state.moves = [];
+                state.gameCompleted = false;
+                state.targetReached = false;
+                state.isPuzzleSolvable = true;
+                // Add this line:
+                state.hintsAvailable = getHintsForLevel(state.level);
+                updateUI();
+                messageElement.textContent = `Level ${state.level}: Combine numbers to reach ${state.target}.`;
+            }
+            // Generate board with progressive difficulty
+            function generateBoard(level) {
+                // Cap level at 24 for difficulty calculations
+                const cappedLevel = Math.min(level, 24);
+                
+                // Board size increases with level (3x3 up to 5x5)
+                const boardSize = Math.min(5, 3 + Math.floor(cappedLevel / 8));
+                const numTiles = boardSize * boardSize;
+                const board = [];
+                
+                // Generate random numbers based on level difficulty
+                for (let i = 0; i < numTiles; i++) {
+                    // Base maximum number increases with level
+                    let maxNum = 10 + (cappedLevel * 3);
+                    let val = Math.floor(Math.random() * maxNum) + 1;
+                    
+                    // Progressively increase chance of larger numbers
+                    if (cappedLevel > 2) {
+                        const largeNumChance = 0.1 + (cappedLevel * 0.01);
+                        if (Math.random() < largeNumChance) {
+                            // Multiplier grows with level
+                            const multiplier = Math.floor(Math.random() * Math.min(8, 2 + cappedLevel/4)) + 2;
+                            val *= multiplier;
+                        }
+                    }
+                    
+                    // Add some prime numbers in higher levels to make division challenging
+                    if (cappedLevel > 10 && Math.random() < 0.15) {
+                        const primes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+                        val = primes[Math.floor(Math.random() * primes.length)];
+                    }
+                    
+                    // Add some negative numbers in higher levels
+                    if (cappedLevel > 15 && Math.random() < 0.2) {
+                        val *= -1;
+                    }
+                    
+                    board.push(val);
+                }
+                
+                return board;
+            }
+            
+            // Generate target with progressive difficulty and minimum values
+            function generateTarget(board, level) {
+                const cappedLevel = Math.min(level, 24);
+                const operations = [
+                    (a, b) => a + b,
+                    (a, b) => a - b,
+                    (a, b) => a * b,
+                    (a, b) => a / b
+                ];
+                
+                // Copy the board for simulation
+                let numbers = [...board];
+                
+                // For higher levels, may start with a more complex target
+                let startingIndex = Math.floor(Math.random() * numbers.length);
+                let result = numbers[startingIndex];
+                numbers.splice(startingIndex, 1);
+                
+                // Perform more operations as level increases
+                const baseOperations = 2;
+                const additionalOperations = Math.min(numbers.length - 1, Math.floor(cappedLevel / 4));
+                const numOperations = Math.min(numbers.length, baseOperations + additionalOperations);
+                
+                for (let i = 0; i < numOperations; i++) {
+                    if (numbers.length < 1) break;
+                    // Select random operation that gives a whole number
+                    let validOps = [];
+                    let a = result;
+                    
+                    for (let j = 0; j < numbers.length; j++) {
+                        let b = numbers[j];
+                        
+                        for (let k = 0; k < operations.length; k++) {
+                            // Skip division if it would result in non-integer
+                            if (k === 3 && (b === 0 || a % b !== 0)) continue;
+                            
+                            let calc = operations[k](a, b);
+                            if (Number.isInteger(calc)) {
+                                // In higher levels, prefer operations that yield more complex results
+                                let weight = 1;
+                                if (cappedLevel > 10) {
+                                    // Prefer operations that give non-trivial results
+                                    if (calc !== 0 && Math.abs(calc) > 1) weight = 2;
+                                    if (Math.abs(calc) > 20) weight = 3;
+                                }
+                                
+                                // Add the operation multiple times based on weight
+                                for (let w = 0; w < weight; w++) {
+                                    validOps.push({ index: j, op: k, result: calc });
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (validOps.length === 0) break;
+                    
+                    // Choose a random valid operation
+                    const selectedOp = validOps[Math.floor(Math.random() * validOps.length)];
+                    result = selectedOp.result;
+                    numbers.splice(selectedOp.index, 1);
+                }
+                
+                // Make sure target is positive for lower levels
+                if (cappedLevel < 15) {
+                    result = Math.abs(result);
+                }
+                
+                // Set minimum target based on level (ensures gradually increasing difficulty)
+                const minTarget = 20 + (cappedLevel * 5);
+                if (Math.abs(result) < minTarget) {
+                    // If result is too small, generate a new target within appropriate range
+                    result = minTarget + Math.floor(Math.random() * cappedLevel * 10);
+                }
+                
+                // Ensure target is reasonably sized
+                const maxTarget = 1000 + (cappedLevel * 500);
+                return Math.abs(result) % maxTarget;
+            }
+            
+            // Render the game board
+            function renderBoard() {
+                gameBoard.innerHTML = '';
+                
+                state.board.forEach((value, index) => {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.textContent = value;
+                    tile.dataset.index = index;
+                    
+                    if (state.selectedTiles.includes(index)) {
+                        tile.classList.add('selected');
+                    }
+                    
+                    tile.addEventListener('click', () => selectTile(index));
+                    gameBoard.appendChild(tile);
+                });
+            }
+            
+            // Select/deselect a tile
+            function selectTile(index) {
+                if (state.gameCompleted) return;
+                
+                const tileIndex = state.selectedTiles.indexOf(index);
+                
+                if (tileIndex === -1) {
+                    // Select if fewer than 2 tiles are selected
+                    if (state.selectedTiles.length < 2) {
+                        state.selectedTiles.push(index);
+                    }
+                } else {
+                    // Deselect
+                    state.selectedTiles.splice(tileIndex, 1);
+                }
+                
+                updateUI();
+            }
+            
+            // Perform operation on selected tiles
+            function performOperation(operation) {
+                if (state.selectedTiles.length !== 2 || state.gameCompleted) return;
+                
+                const [index1, index2] = state.selectedTiles;
+                const value1 = state.board[index1];
+                const value2 = state.board[index2];
+                let result;
+                let operationText;
+                
+                // Calculate result based on operation
+                switch (operation) {
+                    case 'add':
+                        result = value1 + value2;
+                        operationText = `${value1} + ${value2} = ${result}`;
+                        break;
+                    case 'subtract':
+                        result = value1 - value2;
+                        operationText = `${value1} - ${value2} = ${result}`;
+                        break;
+                    case 'multiply':
+                        result = value1 * value2;
+                        operationText = `${value1} × ${value2} = ${result}`;
+                        break;
+                    case 'divide':
+                        // Check for division by zero and integer result
+                        if (value2 === 0 || value1 % value2 !== 0) {
+                            messageElement.textContent = 'Division must result in a whole number!';
+                            return;
+                        }
+                        result = value1 / value2;
+                        operationText = `${value1} ÷ ${value2} = ${result}`;
+                        break;
+                }
+                
+                // Record the move
+                state.moves.push(operationText);
+                
+                // Update the board
+                const newBoard = [...state.board];
+                newBoard[index1] = result;
+                
+                // Remove the second tile by shifting all items after it
+                newBoard.splice(index2, 1);
+                
+                state.board = newBoard;
+                state.selectedTiles = [];
+                
+                // Check if the target is reached
+                checkTarget();
+                
+                // Check if puzzle is still solvable after this move
+                checkPuzzleSolvable();
+                
+                updateUI();
+            }
+            
+            // Check if target has been reached
+            function checkTarget() {
+                if (state.board.includes(state.target)) {
+                    const moveCount = state.moves.length;
+                    // Bonus points for solving quickly gets harder with level
+                    const levelDifficulty = Math.min(state.level, 24);
+                    const moveTarget = 5 + Math.floor(levelDifficulty / 3);
+                    const bonusPoints = Math.max(0, moveTarget - moveCount) * (10 + levelDifficulty);
+                    
+                    // Level points increase with difficulty
+                    const levelPoints = levelDifficulty * 50;
+                    const totalPoints = levelPoints + bonusPoints;
+                    
+                    // Add bonus points for unused hints
+                    const unusedHintsBonus = state.hintsAvailable * 25;
+                    state.score += totalPoints + unusedHintsBonus;
+
+                    // Update message to include hint bonus
+                    messageElement.textContent = `Target reached! +${totalPoints + unusedHintsBonus} points (Level: ${levelPoints}, Bonus: ${bonusPoints}, Unused Hints: ${unusedHintsBonus})`;
+                    state.gameCompleted = true;
+                    state.targetReached = true;
+                    
+                    // Highlight the winning tile
+                    setTimeout(() => {
+                        const winningTileIndex = state.board.indexOf(state.target);
+                        const tiles = document.querySelectorAll('.tile');
+                        if (tiles[winningTileIndex]) {
+                            tiles[winningTileIndex].style.backgroundColor = 'var(--secondary)';
+                            tiles[winningTileIndex].style.color = '#000';
+                        }
+                    }, 100);
+                } else if (state.board.length === 1 && state.board[0] !== state.target) {
+                    messageElement.textContent = 'No more moves possible. Try again!';
+                    state.gameCompleted = true;
+                }
+            }
+            
+            // Check if the puzzle is still solvable - improved version
+            function checkPuzzleSolvable() {
+                // If there's only 1 tile left and it's not the target, it's unsolvable
+                if (state.board.length === 1 && state.board[0] !== state.target) {
+                    state.isPuzzleSolvable = false;
+                    return;
+                }
+                
+                // If we can reach the target directly with the current tiles, it's solvable
+                if (state.board.includes(state.target)) {
+                    state.isPuzzleSolvable = true;
+                    return;
+                }
+                
+                // Enhanced solvability check that considers the maximum possible value
+                if (state.board.length >= 2) {
+                    // Find the maximum possible value by various operations
+                    let maxAdd = 0, maxMultiply = 1;
+                    let largestValues = [...state.board].sort((a, b) => Math.abs(b) - Math.abs(a));
+                    
+                    // Check maximum possible addition
+                    for (let num of state.board) {
+                        if (num > 0) maxAdd += num;
+                    }
+                    
+                    // Check maximum possible multiplication
+                    for (let num of state.board) {
+                        if (num > 1) maxMultiply *= num;
+                    }
+                    
+                    // Check if target is potentially reachable
+                    if (maxAdd < state.target && maxMultiply < state.target) {
+                        // If largest values are positive but small, target is unreachable
+                        if (largestValues[0] > 0 && largestValues[1] > 0) {
+                            state.isPuzzleSolvable = false;
+                            return;
+                        }
+                    }
+                    
+                    // Additional check for two remaining tiles
+                    if (state.board.length === 2) {
+                        const [a, b] = state.board;
+                        
+                        // Check if any operation can reach the target
+                        const canReachTarget = 
+                            a + b === state.target || 
+                            a - b === state.target || 
+                            b - a === state.target ||
+                            a * b === state.target ||
+                            (b !== 0 && a % b === 0 && a / b === state.target) ||
+                            (a !== 0 && b % a === 0 && b / a === state.target);
+                            
+                        if (!canReachTarget) {
+                            state.isPuzzleSolvable = false;
+                            return;
+                        }
+                    }
+                }
+                
+                // Try all possible tile combinations with all operations
+                const operations = [
+                    (a, b) => a + b,
+                    (a, b) => a - b,
+                    (a, b) => b - a, // Include reverse subtraction
+                    (a, b) => a * b,
+                    (a, b) => (b !== 0 && a % b === 0) ? a / b : null,
+                    (a, b) => (a !== 0 && b % a === 0) ? b / a : null // Include reverse division
+                ];
+                
+                // Find closest value to target
+                let closestValue = state.board.reduce((prev, curr) => 
+                    Math.abs(curr - state.target) < Math.abs(prev - state.target) ? curr : prev, 
+                    state.board[0]);
+                    
+                let closestDistance = Math.abs(closestValue - state.target);
+                
+                // If we're already very close, assume it's solvable
+                if (closestDistance <= 5) {
+                    state.isPuzzleSolvable = true;
+                    return;
+                }
+                
+                let canMakeProgress = false;
+                
+                // Try all pairs of tiles
+                for (let i = 0; i < state.board.length; i++) {
+                    for (let j = i + 1; j < state.board.length; j++) {
+                        for (const operation of operations) {
+                            const result = operation(state.board[i], state.board[j]);
+                            
+                            // Skip invalid operations (like division that doesn't result in an integer)
+                            if (result === null) continue;
+                            
+                            const distance = Math.abs(result - state.target);
+                            
+                            // If this operation gets us closer to the target, puzzle might be solvable
+                            if (distance < closestDistance) {
+                                canMakeProgress = true;
+                                break;
+                            }
+                        }
+                        if (canMakeProgress) break;
+                    }
+                    if (canMakeProgress) break;
+                }
+                
+                state.isPuzzleSolvable = canMakeProgress;
+            }
+            
+            // Get a hint - modified to use available hints
+            function getHint() {
+                if (state.gameCompleted || state.board.length < 2) return;
+                
+                // Check if player has hints available
+                if (state.hintsAvailable <= 0) {
+                    messageElement.textContent = 'No hints available! Complete levels to earn hints.';
+                    return;
+                }
+                
+                const operations = [
+                    { name: 'add', func: (a, b) => a + b, symbol: '+' },
+                    { name: 'subtract', func: (a, b) => a - b, symbol: '-' },
+                    { name: 'multiply', func: (a, b) => a * b, symbol: '×' },
+                    { name: 'divide', func: (a, b) => a / b, symbol: '÷' }
+                ];
+                
+                let bestMove = null;
+                let bestDistance = Infinity;
+                
+                // Try all possible moves
+                for (let i = 0; i < state.board.length; i++) {
+                    for (let j = 0; j < state.board.length; j++) {
+                        if (i === j) continue;
+                        
+                        const a = state.board[i];
+                        const b = state.board[j];
+                        
+                        for (const op of operations) {
+                            // Skip division if not resulting in integer
+                            if (op.name === 'divide' && (b === 0 || a % b !== 0)) continue;
+                            
+                            const result = op.func(a, b);
+                            const distance = Math.abs(result - state.target);
+                            
+                            if (distance < bestDistance) {
+                                bestDistance = distance;
+                                bestMove = { i, j, op, result, distance };
+                            }
+                            
+                            // If we found a solution, no need to keep searching
+                            if (distance === 0) break;
+                        }
+                    }
+                }
+                
+                if (bestMove) {
+                    const { i, j, op, result, distance } = bestMove;
+                    messageElement.textContent = `Hint: Try ${state.board[i]} ${op.symbol} ${state.board[j]} = ${result}`;
+                    
+                    // Deduct a hint
+                    state.hintsAvailable -= 1;
+                    updateUI();
+                }
+            }
+            
+            // Reset the current board - resets to level 1
+            function resetBoard() {
+                if (!state.isPuzzleSolvable || state.gameCompleted) {
+                    state.level = 1;
+                    state.score = 0;
+                    state.hintsAvailable = getHintsForLevel(state.level);
+                    startNewLevel();
+                    messageElement.textContent = 'Game reset to level 1.';
+                }
+            }
+            
+            // New Game function - only available when target is reached
+            function newGame() {
+                if (state.targetReached) {
+                    if (state.level < 24) {
+                        state.level++;
+                        startNewLevel();
+                    } else {
+                        // Track total moves and hints used
+                        const totalMoves = state.moves.length;
+                        const hintsUsed = getHintsForLevel(state.level) - state.hintsAvailable;
+                        
+                        // Victory screen with animations and stats
+                        gameBoard.innerHTML = `
+                            <div style="grid-column: span 5; text-align: center; padding: 2rem;">
+                                <h2 style="color: var(--secondary); font-size: 2.5rem; margin-bottom: 1.5rem; animation: pulse 2s infinite;">
+                                    🎉 Congratulations! 🎉
+                                </h2>
+                                <p style="font-size: 1.5rem; margin-bottom: 1.5rem;">
+                                    You've successfully completed all 24 levels and become a true NumberMaster!
+                                </p>
+                                
+                                <div style="font-size: 5rem; margin: 1rem 0; animation: shine 3s infinite;">🏆</div>
+                                
+                                <div style="background-color: rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 1.5rem; margin: 2rem auto; max-width: 400px;">
+                                    <div style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 0.5rem;">YOUR FINAL SCORE</div>
+                                    <div style="color: var(--primary); font-size: 3rem; font-weight: bold; margin-bottom: 1rem;">${state.score}</div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-around; margin: 2rem 0; flex-wrap: wrap;">
+                                    <div style="background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin: 0.5rem; min-width: 140px; text-align: center;">
+                                        <div style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.5rem;">24</div>
+                                        <div style="color: var(--text-secondary); font-size: 0.9rem;">LEVELS COMPLETED</div>
+                                    </div>
+                                    <div style="background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin: 0.5rem; min-width: 140px; text-align: center;">
+                                        <div style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.5rem;">${totalMoves}</div>
+                                        <div style="color: var(--text-secondary); font-size: 0.9rem;">TOTAL MOVES</div>
+                                    </div>
+                                    <div style="background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem; margin: 0.5rem; min-width: 140px; text-align: center;">
+                                        <div style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.5rem;">${hintsUsed}</div>
+                                        <div style="color: var(--text-secondary); font-size: 0.9rem;">HINTS USED</div>
+                                    </div>
+                                </div>
+                                
+                                <button id="replay-button" class="tertiary" style="font-size: 1.2rem; padding: 1rem 2rem; margin-top: 1rem;">
+                                    Play Again
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add animations
+                        const style = document.createElement('style');
+                        style.innerHTML = `
+                            @keyframes pulse {
+                                0% { transform: scale(1); }
+                                50% { transform: scale(1.05); }
+                                100% { transform: scale(1); }
+                            }
+                            @keyframes shine {
+                                0% { text-shadow: 0 0 5px var(--secondary); }
+                                50% { text-shadow: 0 0 20px var(--secondary), 0 0 30px var(--primary); }
+                                100% { text-shadow: 0 0 5px var(--secondary); }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                        
+                        // Create confetti effect
+                        createConfetti();
+                        
+                        document.getElementById('replay-button').addEventListener('click', () => {
+                            state.level = 1;
+                            state.score = 0;
+                            state.hintsAvailable = getHintsForLevel(state.level);
+                            startNewLevel();
+                            
+                            // Remove added style
+                            document.head.removeChild(style);
+                        });
+                        
+                        messageElement.textContent = 'Congratulations! You have mastered all levels!';
+                    }
+                }
+            }
+
+            // Add this function to create confetti animation
+            function createConfetti() {
+                const colors = ['#bb86fc', '#03dac6', '#ff7597', '#CF6679'];
+                const confettiCount = 50; // Reduced count to prevent performance issues
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.style.position = 'fixed';
+                        confetti.style.zIndex = '-1';
+                        confetti.style.width = `${Math.random() * 10 + 5}px`;
+                        confetti.style.height = `${Math.random() * 10 + 5}px`;
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.left = `${Math.random() * 100}vw`;
+                        confetti.style.top = '-10px';
+                        confetti.style.opacity = '0.8';
+                        confetti.style.transform = 'rotate(0deg)';
+                        confetti.style.transition = `all ${Math.random() * 3 + 2}s linear`;
+                        
+                        document.body.appendChild(confetti);
+                        
+                        // Animate confetti falling
+                        setTimeout(() => {
+                            confetti.style.top = '100vh';
+                            confetti.style.transform = `rotate(${Math.random() * 360 * 2}deg)`;
+                            confetti.style.opacity = '0';
+                        }, 50);
+                        
+                        // Remove confetti from DOM after animation
+                        setTimeout(() => {
+                            document.body.removeChild(confetti);
+                        }, 5000);
+                    }, i * 100); // Stagger confetti creation
+                }
+            }
+            
+            // Update UI elements
+            function updateUI() {
+                renderBoard();
+                targetElement.textContent = state.target;
+                levelElement.textContent = `${state.level}/24`;
+                scoreElement.textContent = state.score;
+                hintsLeftElement.textContent = state.hintsAvailable;
+                
+                // Update button states
+                resetBoardButton.disabled = state.isPuzzleSolvable;
+                newGameButton.disabled = !state.targetReached;
+                hintButton.disabled = state.hintsAvailable <= 0 || state.gameCompleted;
+                
+                // Update move history
+                movesHistory.innerHTML = '';
+                state.moves.forEach(move => {
+                const moveElement = document.createElement('div');
+                moveElement.className = 'move';
+                moveElement.textContent = move;
+                movesHistory.appendChild(moveElement);
+                });
+
+                // Always scroll to the bottom of moves history
+                movesHistory.scrollTop = movesHistory.scrollHeight;
+                }
+
+                // Event listeners
+                addButton.addEventListener('click', () => performOperation('add'));
+                subtractButton.addEventListener('click', () => performOperation('subtract'));
+                multiplyButton.addEventListener('click', () => performOperation('multiply'));
+                divideButton.addEventListener('click', () => performOperation('divide'));
+                newGameButton.addEventListener('click', newGame);
+                hintButton.addEventListener('click', getHint);
+                resetBoardButton.addEventListener('click', resetBoard);
+
+                // Start the game
+                initGame();
+                });
+                </script>
+                </body>
+                </html>
